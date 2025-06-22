@@ -7,12 +7,26 @@ const logging = require('./logging');
 const memory = require('./memory');
 const cli = require('./cli');
 const config = require('./config');
+const mineflayer = require('mineflayer');
+const { pathfinder, Movements, goals } = require('mineflayer-pathfinder');
 
 const app = express();
 app.use(express.json());
 
 let bot = null;
 let agentState = {};
+
+// Example bot creation and plugin loading (add this to your connect logic):
+function createBot(options) {
+  const bot = mineflayer.createBot(options);
+  bot.loadPlugin(pathfinder);
+  // Optionally, set default movements for the bot
+  bot.defaultMovements = new Movements(bot);
+  return bot;
+}
+
+// Export createBot for use in CLI/connect logic
+module.exports.createBot = createBot;
 
 // CLI command endpoint (example)
 app.post('/cli', async (req, res) => {
